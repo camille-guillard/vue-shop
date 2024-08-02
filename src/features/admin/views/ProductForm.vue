@@ -4,18 +4,19 @@ import { z } from 'zod';
 import { toTypedSchema } from '@vee-validate/zod';
 import { onMounted, ref } from 'vue';
 import {
-  addProduct,
-  editProduct,
   getProduct,
 } from '../../../shared/services/product.service';
-import type { ProductInterface } from '../../../interfaces/Product.interface';
+import type { ProductInterface } from '../../../shared/interfaces/Product.interface';
 import { useRoute, useRouter } from 'vue-router';
+import { useAdminProducts } from '../stores/adminProductStore';
 
 const firstInput = ref<HTMLInputElement | null>(null);
 const product = ref<ProductInterface | null>(null);
 
 const route = useRoute();
 const router = useRouter();
+
+const adminProductStore = useAdminProducts();
 
 if (route.params.productId) {
   product.value = await getProduct(route.params.productId as string);
@@ -24,9 +25,9 @@ if (route.params.productId) {
 const initialValues = {
   title: product.value ? product.value.title : '',
   image: product.value ? product.value.image : '',
-  price: product.value ? product.value.price : '',
+  price: product.value ? product.value.price : 0,
   description: product.value ? product.value.description : '',
-  category: product.value ? product.value.category : '',
+  category: product.value ? product.value.category : 'desktop',
 };
 
 onMounted(() => {
@@ -64,17 +65,17 @@ const description = useField('description');
 const category = useField('category');
 
 const trySubmit = handleSubmit(async (formValues, { resetForm }) => {
-  try {
-    if (!product.value) {
-      await addProduct(formValues);
-    } else {
-      await editProduct(product.value._id, formValues);
+    try {
+        if (!product.value) {
+            await adminProductStore.addProduct(formValues);
+        } else {
+            await adminProductStore.editProduct(product.value._id, formValues);
+        }
+        router.push('/admin/productlist');
+    } catch (e) {
+        console.log(e);
     }
-    router.push('/admin/productlist');
-  } catch (e) {
-    console.log(e);
-  }
-});
+})
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TheHeader from './components/Header.vue';
 import TheFooter from './components/Footer.vue';
-import { seed40articles, seed } from './data/seed';
+import { seed40articles, seed } from './shared/data/seed';
 
 // seed('vueprojectproducts')
  seed40articles('vueprojectproducts');

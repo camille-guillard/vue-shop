@@ -3,7 +3,7 @@ import type {
   FiltersInterface,
   ProductInterface,
   FilterUpdate,
-} from '../../interfaces';
+} from '../../../../shared/interfaces';
 import ShopProductList from './ShopProductList.vue';
 import ShopFilters from './ShopFilters.vue';
 import { reactive } from 'vue';
@@ -20,6 +20,7 @@ const state = reactive<{
 defineProps<{
   products: ProductInterface[];
   filters: FiltersInterface;
+  page: number;
   moreResults: boolean;
 }>();
 
@@ -67,6 +68,7 @@ const emit = defineEmits<{
         @inc-page="emit('incPage')"
         :products="products"
         :more-results="moreResults"
+        :page="page"
       />
     </div>
   </div>
